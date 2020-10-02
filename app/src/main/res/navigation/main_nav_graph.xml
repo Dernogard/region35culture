@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/cultureGroupsFragment">
+
+    <fragment
+        android:id="@+id/cultureGroupsFragment"
+        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureGroupsFragment"
+        android:label="CultureGroupsFragment" >
+        <action
+            android:id="@+id/action_cultureGroupsFragment_to_cultureListFragment"
+            app:destination="@id/cultureListFragment" />
+        <argument
+            android:name="cultureGroupTitle"
+            app:argType="string"
+            android:defaultValue="ShowAll" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cultureListFragment"
+        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureListFragment"
+        android:label="culture_groups_fragment"
+        tools:layout="@layout/culture_groups_fragment" >
+        <action
+            android:id="@+id/action_cultureListFragment_to_cultureDetailFragment"
+            app:destination="@id/cultureDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cultureDetailFragment"
+        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureDetailFragment"
+        android:label="CultureDetailFragment" />
+</navigation>
