@@ -21,11 +21,11 @@ interface CultureObjectDao {
     @Query("SELECT * FROM CultureObject WHERE type=:objectType")
     fun getByGroupObservable(objectType: String): Observable<List<CultureObject>>
 
+    @Query("SELECT * FROM CultureObject WHERE title LIKE '%'||:query||'%'")
+    fun getByNameFlowable(query: String): Observable<List<CultureObject>>
+
     @Query("SELECT * FROM CultureObject WHERE id=:id")
     fun findByIdSingle(id: Long): Single<CultureObject>
-
-    @Query("SELECT * FROM CultureObject WHERE title LIKE :query||'%'")
-    fun findByNameFlowable(query: String): Flowable<List<CultureObject>>
 
     @Query("SELECT type FROM CultureObject WHERE LENGTH(type) > 1 GROUP BY type")
     fun getAllGroupObservable(): Observable<List<String>>

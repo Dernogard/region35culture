@@ -1,30 +1,28 @@
-package ru.dernogard.region35culture
+package ru.dernogard.region35culture.api
 
-import android.content.Context
 import android.util.Log
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.flatMapIterable
-import retrofit2.Retrofit
-import ru.dernogard.region35culture.api.CultureObjectLoader
 import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.database.models.CultureObjectResponse
 import ru.dernogard.region35culture.database.repo.CultureObjectLocalRepo
 import javax.inject.Inject
 
+interface CultureInternetApi {
+    fun getDataAndSaveIt()
+}
+
 class CultureApiService @Inject constructor(
-    private val cultureObjectRepo: CultureObjectLocalRepo) {
+    private val cultureObjectRepo: CultureObjectLocalRepo,
+    private val cultureObjectRetrofitLoader: CultureObjectApi
+    ): CultureInternetApi {
 
     private val disposablesStorage = CompositeDisposable()
 
-    fun getDataAndSaveIt() {
-        CultureObjectLoader
-            .getCultureDataRetrofit()
+    override fun getDataAndSaveIt() {
+        cultureObjectRetrofitLoader
+            .getData("111504")
             .flatMapIterable()
             .skip(2) // skip first two elements - a header of a table
             .map { convertToCultureObject(it) }
@@ -49,8 +47,6 @@ class CultureApiService @Inject constructor(
                 documentName = prepareString(resp.documentName),
                 latitude = prepareDouble(resp.latitude),
                 longitude = prepareDouble(resp.longitude),
-                //latitude = resp.latitude.toDouble(),
-                //longitude = resp.longitude.toDouble(),
                 type = prepareString(resp.type),
                 borderX = prepareString(resp.borderX),
                 borderY = prepareString(resp.borderY)

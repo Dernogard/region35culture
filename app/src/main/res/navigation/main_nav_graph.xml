@@ -9,7 +9,7 @@
         android:id="@+id/cultureListFragment"
         android:name="ru.dernogard.region35culture.ui.main.fragments.CultureListFragment"
         android:label="culture_groups_fragment"
-        tools:layout="@layout/culture_groups_fragment" >
+        tools:layout="@layout/culture_list_fragment" >
         <action
             android:id="@+id/action_cultureListFragment_to_cultureDetailFragment"
             app:destination="@id/cultureDetailFragment" />
@@ -17,6 +17,13 @@
 
     <fragment
         android:id="@+id/cultureDetailFragment"
-        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureListFragment"
-        android:label="CultureDetailFragment" />
+        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureDetailFragment"
+        android:label="CultureDetailFragment"
+        tools:layout="@layout/culture_detail_fragment">
+        <argument
+            android:name="cultureObject"
+            app:argType="ru.dernogard.region35culture.database.models.CultureObject"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

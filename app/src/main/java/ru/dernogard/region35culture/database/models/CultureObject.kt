@@ -3,6 +3,7 @@ package ru.dernogard.region35culture.database.models
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /**
  * https://www.opendata.gov35.ru/datasets/json.php?id_dataset=111504
@@ -20,7 +21,7 @@ data class CultureObject(
     val type: String,
     val borderX: String,
     val borderY: String
-) {
+): Serializable {
     // We can use the object's number from API but it could changed
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

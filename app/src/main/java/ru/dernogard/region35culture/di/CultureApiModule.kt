@@ -3,7 +3,7 @@ package ru.dernogard.region35culture.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ApplicationComponent
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 const val BASE_URL = "https://www.opendata.gov35.ru/datasets/"
 
-@InstallIn(ActivityComponent::class)
+@InstallIn(ApplicationComponent::class)
 @Module
 class CultureApiModule {
 
@@ -51,8 +51,8 @@ class CultureApiModule {
         .addCallAdapterFactory(rxAdapter)
         .build()
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideCultureApi(retrofit: Retrofit): CultureObjectApi =
         retrofit.create(CultureObjectApi::class.java)
 

@@ -1,7 +1,9 @@
 package ru.dernogard.region35culture.database.repo
 
 import android.util.Log
+import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import ru.dernogard.region35culture.database.dao.CultureObjectDao
 import ru.dernogard.region35culture.database.models.CultureObject
 import javax.inject.Inject
@@ -22,5 +24,8 @@ class CultureObjectLocalRepo @Inject constructor(private val cultureObjectDao: C
 
     fun loadFromLocalDatabaseByGroupObservable(groupName: String): Observable<List<CultureObject>> =
         cultureObjectDao.getByGroupObservable(groupName)
+
+    fun loadFromLocalDatabaseByNameFlowable(query: String): ObservableSource<List<CultureObject>> =
+        cultureObjectDao.getByNameFlowable(query)
 
 }

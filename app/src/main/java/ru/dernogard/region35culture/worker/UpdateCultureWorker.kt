@@ -2,15 +2,28 @@ package ru.dernogard.region35culture.worker
 
 import android.content.Context
 import androidx.work.*
-import ru.dernogard.region35culture.CultureApiService
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.components.ApplicationComponent
+import ru.dernogard.region35culture.api.CultureInternetApi
 import java.util.concurrent.TimeUnit
 
 /**
- * This class works every 12 hours (if it is not blocking user's phone) for
- * updating information about culture objects from API
+ * This class works every few hours
+ * (or after starting app if background work is blocked by user's phone OS)
+ * for updating information about culture objects from API.
  */
 
 class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+    // Need for hilt's inject
+    @EntryPoint
+    @InstallIn(ApplicationComponent::class)
+    interface UpdateCultureWorkEntryPoint{
+        fun cultureApiService(): CultureInternetApi
+    }
+
 
     companion object {
         fun installBackgroundWork(): PeriodicWorkRequest {
@@ -18,9 +31,9 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-            // Update Culture Objects List from api every 12 hours
+            // Update objects of the culture from api every 24 hours
             return PeriodicWorkRequest
-                .Builder(UpdateCultureWorker::class.java, 12, TimeUnit.HOURS)
+                .Builder(UpdateCultureWorker::class.java, 24, TimeUnit.HOURS)
                 .setConstraints(constraint)
                 .build()
         }
@@ -30,8 +43,11 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
 
     private fun checkUpdate(): Result {
         return try {
-            //CultureApiService().getDataAndSaveIt()
+            val hiltEntryPoint =
+                EntryPointAccessors
+                    .fromApplication(applicationContext, UpdateCultureWorkEntryPoint::class.java)
 
+            hiltEntryPoint.cultureApiService().getDataAndSaveIt()
             Result.success()
         } catch (e: Exception) {
             Result.failure()

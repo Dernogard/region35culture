@@ -11,7 +11,7 @@ import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.databinding.ItemCultureObjectBinding
 
-private const val BUNDLE_CULTURE_OBJECT = "cultureObject"
+const val BUNDLE_CULTURE_OBJECT = "cultureObject"
 
 class CultureObjectAdapter :
     ListAdapter<CultureObject, CultureObjectAdapter.CultureObjectHolder>(CultureObjectDiffCallback()) {
@@ -48,8 +48,7 @@ class CultureObjectAdapter :
 
         private fun openDetailScreen(cultureObject: CultureObject) {
             val bundle = bundleOf(BUNDLE_CULTURE_OBJECT to cultureObject)
-            binding.root.findNavController()
-                .navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle)
+            binding.root.findNavController().navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle)
         }
     }
 }
