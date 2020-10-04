@@ -10,13 +10,13 @@ import androidx.room.PrimaryKey
 
 @Entity(indices = [Index(value = ["title"], unique = true)])
 data class CultureObject(
-    val number: Long,
+    val number: Int,
     val title: String,
     val addressGov: String,
     val address: String,
     val documentName: String,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: Double,
+    val longitude: Double,
     val type: String,
     val borderX: String,
     val borderY: String

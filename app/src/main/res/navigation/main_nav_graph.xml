@@ -3,20 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/cultureGroupsFragment">
-
-    <fragment
-        android:id="@+id/cultureGroupsFragment"
-        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureGroupsFragment"
-        android:label="CultureGroupsFragment" >
-        <action
-            android:id="@+id/action_cultureGroupsFragment_to_cultureListFragment"
-            app:destination="@id/cultureListFragment" />
-        <argument
-            android:name="cultureGroupTitle"
-            app:argType="string"
-            android:defaultValue="ShowAll" />
-    </fragment>
+    app:startDestination="@id/cultureListFragment">
 
     <fragment
         android:id="@+id/cultureListFragment"
@@ -30,6 +17,6 @@
 
     <fragment
         android:id="@+id/cultureDetailFragment"
-        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureDetailFragment"
+        android:name="ru.dernogard.region35culture.ui.main.fragments.CultureListFragment"
         android:label="CultureDetailFragment" />
 </navigation>

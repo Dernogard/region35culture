@@ -2,18 +2,17 @@ package ru.dernogard.region35culture.ui.main.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.database.models.CultureGroup
 import ru.dernogard.region35culture.databinding.ItemCultureGroupBinding
+import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
 
 const val BUNDLE_GROUP_TITLE = "cultureGroupTitle"
 
-class CultureGroupsAdapter :
+class CultureGroupsAdapter(val hostFragment: CultureListFragment) :
     ListAdapter<CultureGroup, CultureGroupsAdapter.CultureGroupHolder>(CultureGroupDiffCallback()) {
 
     class CultureGroupDiffCallback : DiffUtil.ItemCallback<CultureGroup>() {
@@ -46,8 +45,7 @@ class CultureGroupsAdapter :
         }
 
         private fun openCultureObjectListScreen(group: CultureGroup) {
-            val bundle = bundleOf(BUNDLE_GROUP_TITLE to group.title)
-            binding.root.findNavController().navigate(R.id.action_cultureGroupsFragment_to_cultureListFragment, bundle)
+            hostFragment.changeCultureObjectList(group)
         }
     }
 }

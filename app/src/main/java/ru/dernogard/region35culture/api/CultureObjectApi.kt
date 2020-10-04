@@ -6,11 +6,12 @@ import retrofit2.http.Query
 import ru.dernogard.region35culture.database.models.CultureObjectResponse
 
 /**
- * Api interface for retrofit
+ * The interface for retrofit
  */
 
 interface CultureObjectApi {
 
+    // id_dataset is pointer to required dataset on the server
     @GET("json.php")
     fun getData(@Query("id_dataset") idDataset: String): Observable<List<CultureObjectResponse>>
 

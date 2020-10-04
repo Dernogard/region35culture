@@ -9,6 +9,7 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.dernogard.region35culture.database.AppRoomDatabase
 import ru.dernogard.region35culture.database.dao.CultureObjectDao
+import ru.dernogard.region35culture.database.repo.CultureObjectLocalRepo
 import javax.inject.Singleton
 
 /**
@@ -27,6 +28,13 @@ object DatabaseModule {
         ).build()
 
     @Provides
-    fun provideCultureObjectDao(database: AppRoomDatabase): CultureObjectDao = database.cultureObjectDao()
+    @Singleton
+    fun provideCultureObjectDao(database: AppRoomDatabase): CultureObjectDao =
+        database.cultureObjectDao()
+
+    @Provides
+    @Singleton
+    fun provideCultureObjectRepo(dao: CultureObjectDao): CultureObjectLocalRepo =
+        CultureObjectLocalRepo(dao)
 
 }
