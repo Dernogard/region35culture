@@ -45,7 +45,7 @@ class CultureViewModel @ViewModelInject constructor(
         return cultureObjectListResultObserver!!
     }
 
-    // Function for example
+    // Function for example using RxJava
     private fun getFreshListUsingRxJava(group: CultureGroup): Observable<List<CultureObject>>? {
         val newResultObservable = cultureObjectRepository.loadAllFromLocalDatabaseObservable()
         return if (group == allInclusiveGroup) newResultObservable

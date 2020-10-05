@@ -1,7 +1,6 @@
 package ru.dernogard.region35culture.ui.main.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -19,19 +18,24 @@ import kotlinx.android.synthetic.main.culture_list_fragment.*
 import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.api.CultureInternetApi
 import ru.dernogard.region35culture.database.models.CultureGroup
+import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.databinding.CultureListFragmentBinding
+import ru.dernogard.region35culture.listeners.ReloadDataButtonListener
 import ru.dernogard.region35culture.ui.main.adapters.CultureGroupsAdapter
 import ru.dernogard.region35culture.ui.main.adapters.CultureObjectAdapter
 import ru.dernogard.region35culture.ui.main.viewmodels.CultureViewModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class CultureListFragment : Fragment() {
 
     private val mViewModel: CultureViewModel by viewModels()
-    private lateinit var bind: CultureListFragmentBinding
-    @Inject lateinit var cultureServiceApi: CultureInternetApi
+
+    @Inject
+    lateinit var cultureServiceApi: CultureInternetApi
+
     private val groupAdapter = CultureGroupsAdapter(this)
     private val objectAdapter = CultureObjectAdapter()
     private val disposableStorage = CompositeDisposable()
@@ -42,56 +46,61 @@ class CultureListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        bind = CultureListFragmentBinding.inflate(layoutInflater)
-        return bind.root
+        return CultureListFragmentBinding.inflate(layoutInflater).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRetryButton()
         setupCultureGroupRV()
         setupCultureObjectRV()
         fillCultureGroupRV()
         fillCultureObjectRVInFirstStart()
     }
 
+    /**
+     * This button is used if the app don't have any data for showing
+     * In most of case it not necessary because of
+     * @see ru.dernogard.region35culture.worker.UpdateCultureWorker
+     * will do auto-reloading job after reconnect
+     */
+    private fun setupRetryButton() {
+        button_retry.setOnClickListener(
+            ReloadDataButtonListener(requireContext(), cultureServiceApi)
+        )
+    }
+
     private fun setupCultureGroupRV() {
-        val rv = bind.rvCultureGroups
-        rv.layoutManager =
+        rv_culture_groups.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rv.adapter = groupAdapter
+        rv_culture_groups.adapter = groupAdapter
     }
 
     private fun setupCultureObjectRV() {
-        val rv = bind.rvCultureObjects
-        rv.layoutManager =
+        rv_culture_objects.layoutManager =
             GridLayoutManager(requireContext(), 2)
-        rv.adapter = objectAdapter
+        rv_culture_objects.adapter = objectAdapter
     }
 
     private fun fillCultureGroupRV() {
         mViewModel.cultureGroupListObserver
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { list ->
-                if (!list.isNullOrEmpty()) {
-                    groupAdapter.submitList(list)
-                    groupAdapter.notifyDataSetChanged()
-                } else {
-                    //CultureApiService().getDataAndSaveIt()
-                    Log.e(javaClass.simpleName, "Empty list")
-                }
+            .onErrorReturn { emptyList() }
+            .subscribe { groupsList ->
+                // never empty because of first button created by default
+                groupAdapter.submitList(groupsList)
+                groupAdapter.notifyDataSetChanged()
             }.addTo(disposableStorage)
     }
 
+    private fun changeEmptyListLabelVisibility(isShow: Boolean) {
+        rv_culture_objects.visibility = (!isShow).toViewVisibility()
+        empty_list_label.visibility = isShow.toViewVisibility()
+    }
+
+    // set default group if variable from viewModel is null
     private fun fillCultureObjectRVInFirstStart() {
-
-
-// just check, replace to correct place
-        cultureServiceApi.getDataAndSaveIt()
-
-
-
-
         val defaultGroup = mViewModel.currentCultureGroup ?: mViewModel.allInclusiveGroup
         showCultureObjectByGroup(defaultGroup)
     }
@@ -100,18 +109,26 @@ class CultureListFragment : Fragment() {
         mViewModel.searchCultureObjectsByGroup(group)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturn { emptyList() }
             .subscribe { list ->
-                objectAdapter.submitList(list)
-                objectAdapter.notifyDataSetChanged()
-                rv_culture_objects.scrollToPosition(0)
                 changeAppBarTitle(group)
+
+                if (!list.isNullOrEmpty()) {
+                    changeEmptyListLabelVisibility(isShow = false)
+                    objectAdapter.submitList(list)
+                    objectAdapter.notifyDataSetChanged()
+                    rv_culture_objects.scrollToPosition(0)
+                } else {
+                    changeEmptyListLabelVisibility(isShow = true)
+                    // if the result is empty try to load fresh data from server
+                    // usually it's redundant but as a precaution in case if first loading
+                    // data from Internet is failing
+                    cultureServiceApi.getDataAndSaveIt()
+                }
             }.addTo(disposableStorage)
     }
 
-    private fun changeAppBarTitle(group: CultureGroup) {
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = group.title
-    }
-
+    // "Callback" from adapter. Work when click by the group button
     fun changeCultureObjectList(group: CultureGroup) {
         showCultureObjectByGroup(group)
     }
@@ -130,25 +147,35 @@ class CultureListFragment : Fragment() {
             .distinctUntilChanged()
             .debounce(500, TimeUnit.MILLISECONDS)
             .switchMap {
-                mViewModel.getCurrentListObservable()?.flatMap {list ->
+                mViewModel.getCurrentListObservable()?.flatMap { list ->
                     Observable.fromIterable(list)
                         .filter { building ->
                             building.title.contains(it, false)
-                        }.toList()
+                        }
+                        .toList()
                         .toObservable()
                 }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {list ->
+            .onErrorReturn { emptyList<CultureObject>() }
+            .subscribe { list ->
                 objectAdapter.submitList(list)
                 objectAdapter.notifyDataSetChanged()
             }
             .addTo(disposableStorage)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        disposableStorage.dispose()
+    private fun changeAppBarTitle(group: CultureGroup) {
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = group.title
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposableStorage.clear()
+    }
+}
+
+// show view if boolean is true
+private fun Boolean.toViewVisibility(): Int {
+    return if (this) View.VISIBLE else View.INVISIBLE
 }

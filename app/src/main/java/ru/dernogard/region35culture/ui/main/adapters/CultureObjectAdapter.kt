@@ -22,7 +22,6 @@ class CultureObjectAdapter :
 
         override fun areContentsTheSame(oldItem: CultureObject, newItem: CultureObject): Boolean =
             oldItem.title == newItem.title
-
     }
 
     override fun onCreateViewHolder(
@@ -48,7 +47,8 @@ class CultureObjectAdapter :
 
         private fun openDetailScreen(cultureObject: CultureObject) {
             val bundle = bundleOf(BUNDLE_CULTURE_OBJECT to cultureObject)
-            binding.root.findNavController().navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle)
+            binding.root.findNavController()
+                .navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle)
         }
     }
 }

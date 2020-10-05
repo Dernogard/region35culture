@@ -33,16 +33,7 @@ class CultureDetailFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fillCultureObjectInfo()
-        createMap()
-    }
-
-    private fun fillCultureObjectInfo() {
-        arguments?.let {
-            cultureObject = CultureDetailFragmentArgs.fromBundle(it).cultureObject
-        }
-        if (cultureObject == null) findNavController().popBackStack()
-        mViewModel.cultureObject = cultureObject
-        changeAppBarTitle(cultureObject)
+        createMapFragment()
     }
 
     override fun onResume() {
@@ -50,17 +41,27 @@ class CultureDetailFragment: Fragment() {
         showObjectOnMap()
     }
 
-    private fun changeAppBarTitle(cObj: CultureObject?) {
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = cObj?.title ?: ""
+    private fun fillCultureObjectInfo() {
+        arguments?.let {
+            cultureObject = CultureDetailFragmentArgs.fromBundle(it).cultureObject
+        }
+        // If it will be null try to go back
+        if (cultureObject == null) findNavController().popBackStack()
+        mViewModel.cultureObject = cultureObject
+        changeAppBarTitle(cultureObject)
+    }
+
+    private fun createMapFragment() {
+        val fm = childFragmentManager
+        fm.beginTransaction().replace(R.id.map, mapFragment).commit()
     }
 
     private fun showObjectOnMap() {
         mapFragment.showCultureObjectOnMap(cultureObject)
     }
 
-    private fun createMap() {
-        val fm = childFragmentManager
-        fm.beginTransaction().replace(R.id.map, mapFragment).commit()
+    private fun changeAppBarTitle(cObj: CultureObject?) {
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = cObj?.title ?: ""
     }
 
 }

@@ -6,7 +6,7 @@ import retrofit2.http.Query
 import ru.dernogard.region35culture.database.models.CultureObjectResponse
 
 /**
- * The interface for retrofit
+ * Interface for retrofit
  */
 
 interface CultureObjectApi {

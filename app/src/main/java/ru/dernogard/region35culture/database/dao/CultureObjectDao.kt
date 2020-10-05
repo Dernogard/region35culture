@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import ru.dernogard.region35culture.database.models.CultureObject
@@ -27,10 +26,8 @@ interface CultureObjectDao {
     @Query("SELECT * FROM CultureObject WHERE id=:id")
     fun findByIdSingle(id: Long): Single<CultureObject>
 
+    // Some culture object don't have any group. That's why we using length filter
     @Query("SELECT type FROM CultureObject WHERE LENGTH(type) > 1 GROUP BY type")
     fun getAllGroupObservable(): Observable<List<String>>
-
-    @Query("SELECT * FROM CultureObject")
-    fun getAllList(): List<CultureObject>
 
 }

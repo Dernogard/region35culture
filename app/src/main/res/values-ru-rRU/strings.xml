@@ -3,4 +3,7 @@
     <string name="app_name">Region35Culture</string>
     <string name="show_all">Все</string>
     <string name="action_search">Поиск</string>
+    <string name="empty_list_label">Нет данных для показа. Пожалуйста, проверьте интернет соединение.</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
+    <string name="no_network_connection">Нет сетевого соединения</string>
 </resources>

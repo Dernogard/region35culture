@@ -2,7 +2,6 @@ package ru.dernogard.region35culture.ui.main.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +9,10 @@ import ru.dernogard.region35culture.database.models.CultureGroup
 import ru.dernogard.region35culture.databinding.ItemCultureGroupBinding
 import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
 
-const val BUNDLE_GROUP_TITLE = "cultureGroupTitle"
+/**
+ * This adapter used for showing Culture Group above
+ * @see CultureListFragment
+ */
 
 class CultureGroupsAdapter(val hostFragment: CultureListFragment) :
     ListAdapter<CultureGroup, CultureGroupsAdapter.CultureGroupHolder>(CultureGroupDiffCallback()) {
@@ -21,8 +23,6 @@ class CultureGroupsAdapter(val hostFragment: CultureListFragment) :
 
         override fun areContentsTheSame(oldItem: CultureGroup, newItem: CultureGroup): Boolean =
             oldItem.title == newItem.title
-
-
     }
 
     override fun onCreateViewHolder(

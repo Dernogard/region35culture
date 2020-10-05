@@ -1,9 +1,9 @@
 package ru.dernogard.region35culture.api
 
-import android.util.Log
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.flatMapIterable
+import io.reactivex.schedulers.Schedulers
 import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.database.models.CultureObjectResponse
 import ru.dernogard.region35culture.database.repo.CultureObjectLocalRepo
@@ -26,9 +26,11 @@ class CultureApiService @Inject constructor(
             .flatMapIterable()
             .skip(2) // skip first two elements - a header of a table
             .map { convertToCultureObject(it) }
-            //.filter { o -> o.title.isEmpty() }  // remove error parsing objects
+            .filter { obj -> obj.title.isNotEmpty() }  // remove error parsing objects
             .toList()
             .toObservable()
+            .onErrorReturn { emptyList() }
+            .subscribeOn(Schedulers.io())
             .subscribe { list -> saveDataToDatabase(list) }
             .addTo(disposablesStorage)
     }
@@ -53,9 +55,6 @@ class CultureApiService @Inject constructor(
             )
         } catch (e: Exception) {
             //if any data are error just ignore object returning an empty culture object
-            Log.e(javaClass.simpleName, e.message.toString())
-            Log.e(javaClass.simpleName, resp.toString())
-            Log.e(javaClass.simpleName, "--------------------------------")
             CultureObject(
                 0, "", "", "",
                 "", 0.0, 0.0, "", "", ""
@@ -64,8 +63,6 @@ class CultureApiService @Inject constructor(
     }
 
     private fun saveDataToDatabase(list: List<CultureObject>) {
-        Log.e(javaClass.simpleName, "Size list for save = ${list.size}")
         cultureObjectRepo.saveAllInLocalDatabase(list)
-        Log.e(javaClass.simpleName, "Sucess!")
     }
 }
