@@ -33,11 +33,10 @@ class CultureListFragment : Fragment() {
 
     private val mViewModel: CultureViewModel by viewModels()
 
-    @Inject
-    lateinit var cultureServiceApi: CultureInternetApi
+    @Inject lateinit var cultureServiceApi: CultureInternetApi
+    private lateinit var groupAdapter: CultureGroupsAdapter
+    private lateinit var objectAdapter: CultureObjectAdapter
 
-    private val groupAdapter = CultureGroupsAdapter(this)
-    private val objectAdapter = CultureObjectAdapter()
     private val disposableStorage = CompositeDisposable()
 
     override fun onCreateView(
@@ -52,10 +51,21 @@ class CultureListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRetryButton()
+        setupRvAdapters()
         setupCultureGroupRV()
         setupCultureObjectRV()
         fillCultureGroupRV()
         fillCultureObjectRVInFirstStart()
+    }
+
+    private fun setupRvAdapters() {
+        groupAdapter = CultureGroupsAdapter()
+        groupAdapter.groupSelectedListener = object: CultureGroupsAdapter.GroupSelectedListener {
+            override fun onGroupSelected(group: CultureGroup) {
+                showCultureObjectByGroup(group)
+            }
+        }
+        objectAdapter = CultureObjectAdapter()
     }
 
     /**
@@ -126,11 +136,6 @@ class CultureListFragment : Fragment() {
                     cultureServiceApi.getDataAndSaveIt()
                 }
             }.addTo(disposableStorage)
-    }
-
-    // "Callback" from adapter. Work when click by the group button
-    fun changeCultureObjectList(group: CultureGroup) {
-        showCultureObjectByGroup(group)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

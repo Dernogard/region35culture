@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class ru.dernogard.region35culture.database.models.CultureGroup {     *; }
+-keep class ru.dernogard.region35culture.database.models.CultureObject {     *; }
+-keep class ru.dernogard.region35culture.database.models.CultureObjectResponse {     *; }

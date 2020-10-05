@@ -28,7 +28,6 @@
                 android:layout_margin="8dp">
 
                 <TextView
-                    android:id="@+id/title_culture_object"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"

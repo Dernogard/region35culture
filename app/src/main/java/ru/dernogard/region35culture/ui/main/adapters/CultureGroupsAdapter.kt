@@ -14,8 +14,10 @@ import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
  * @see CultureListFragment
  */
 
-class CultureGroupsAdapter(val hostFragment: CultureListFragment) :
+class CultureGroupsAdapter :
     ListAdapter<CultureGroup, CultureGroupsAdapter.CultureGroupHolder>(CultureGroupDiffCallback()) {
+
+    lateinit var groupSelectedListener: GroupSelectedListener
 
     class CultureGroupDiffCallback : DiffUtil.ItemCallback<CultureGroup>() {
         override fun areItemsTheSame(oldItem: CultureGroup, newItem: CultureGroup): Boolean =
@@ -45,7 +47,11 @@ class CultureGroupsAdapter(val hostFragment: CultureListFragment) :
         }
 
         private fun openCultureObjectListScreen(group: CultureGroup) {
-            hostFragment.changeCultureObjectList(group)
+            groupSelectedListener.onGroupSelected(group)
         }
+    }
+
+    interface GroupSelectedListener {
+        fun onGroupSelected(group: CultureGroup)
     }
 }

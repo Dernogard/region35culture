@@ -48,7 +48,7 @@ class CultureObjectAdapter :
         private fun openDetailScreen(cultureObject: CultureObject) {
             val bundle = bundleOf(BUNDLE_CULTURE_OBJECT to cultureObject)
             binding.root.findNavController()
-                .navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle)
+                .navigate(R.id.action_cultureListFragment_to_cultureDetailFragment, bundle )
         }
     }
 }
