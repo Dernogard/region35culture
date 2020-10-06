@@ -23,8 +23,9 @@ class CultureApiService @Inject constructor(
     override fun getDataAndSaveIt() {
         cultureObjectRetrofitLoader
             .getData("111504")
+            .retry(3)
             .flatMapIterable()
-            .skip(2) // skip first two elements - a header of a table
+            .skip(2) // skip first two elements - a header of the table
             .map { convertToCultureObject(it) }
             .filter { obj -> obj.title.isNotEmpty() }  // remove error parsing objects
             .toList()
