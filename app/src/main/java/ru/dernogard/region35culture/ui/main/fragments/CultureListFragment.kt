@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.widget.RxSearchView
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
@@ -27,13 +28,13 @@ import ru.dernogard.region35culture.ui.main.viewmodels.CultureViewModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class CultureListFragment : Fragment() {
 
     private val mViewModel: CultureViewModel by viewModels()
 
-    @Inject lateinit var cultureServiceApi: CultureInternetApi
+    @Inject
+    lateinit var cultureServiceApi: CultureInternetApi
     private lateinit var groupAdapter: CultureGroupsAdapter
     private lateinit var objectAdapter: CultureObjectAdapter
 
@@ -54,18 +55,25 @@ class CultureListFragment : Fragment() {
         setupRvAdapters()
         setupCultureGroupRV()
         setupCultureObjectRV()
+    }
+
+    override fun onResume() {
+        super.onResume()
         fillCultureGroupRV()
         fillCultureObjectRVInFirstStart()
     }
 
     private fun setupRvAdapters() {
         groupAdapter = CultureGroupsAdapter()
-        groupAdapter.groupSelectedListener = object: CultureGroupsAdapter.GroupSelectedListener {
+        groupAdapter.groupSelectedListener = object : CultureGroupsAdapter.GroupSelectedListener {
             override fun onGroupSelected(group: CultureGroup) {
                 showCultureObjectByGroup(group)
+                rv_culture_objects.scrollToPosition(0)
             }
         }
         objectAdapter = CultureObjectAdapter()
+        objectAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
     /**
@@ -127,15 +135,18 @@ class CultureListFragment : Fragment() {
                     changeEmptyListLabelVisibility(isShow = false)
                     objectAdapter.submitList(list)
                     objectAdapter.notifyDataSetChanged()
-                    rv_culture_objects.scrollToPosition(0)
                 } else {
-                    changeEmptyListLabelVisibility(isShow = true)
                     // if the result is empty try to load fresh data from server
                     // usually it's redundant but as a precaution in case if first loading
                     // data from Internet is failing
-                    cultureServiceApi.getDataAndSaveIt()
+                    reloadDataFromInternet()
                 }
             }.addTo(disposableStorage)
+    }
+
+    private fun reloadDataFromInternet() {
+        changeEmptyListLabelVisibility(isShow = true)
+        cultureServiceApi.getDataAndSaveIt()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -152,7 +163,7 @@ class CultureListFragment : Fragment() {
             .distinctUntilChanged()
             .debounce(500, TimeUnit.MILLISECONDS)
             .switchMap {
-                mViewModel.getCurrentListObservable()?.flatMap { list ->
+                mViewModel.getCurrentListFlowable()?.toObservable()?.flatMap { list ->
                     Observable.fromIterable(list)
                         .filter { building ->
                             building.title.contains(it, false)
@@ -174,8 +185,8 @@ class CultureListFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = group.title
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         disposableStorage.clear()
     }
 }

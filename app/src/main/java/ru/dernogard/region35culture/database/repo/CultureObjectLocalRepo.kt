@@ -1,24 +1,23 @@
 package ru.dernogard.region35culture.database.repo
 
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import ru.dernogard.region35culture.database.dao.CultureObjectDao
 import ru.dernogard.region35culture.database.models.CultureObject
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class CultureObjectLocalRepo @Inject constructor(private val cultureObjectDao: CultureObjectDao) {
+class CultureObjectLocalRepo @Inject constructor(private val cultureObjectDao: CultureObjectDao)
+    : CultureObjectRepository {
 
-    fun saveAllInLocalDatabase(list: List<CultureObject>) =
+    override fun saveAll(list: List<CultureObject>) =
         cultureObjectDao.saveAll(list)
 
-    fun loadGroupFromLocalDatabaseObservable(): Observable<List<String>> =
-        cultureObjectDao.getAllGroupObservable()
+    override fun loadGroupsFlowable(): Flowable<List<String>> =
+        cultureObjectDao.getAllGroupFlowable()
 
-    fun loadAllFromLocalDatabaseObservable(): Observable<List<CultureObject>> =
-        cultureObjectDao.getAllObservable()
+    override fun loadAllObjectsFlowable(): Flowable<List<CultureObject>> =
+        cultureObjectDao.getAllFlowable()
 
-    fun loadFromLocalDatabaseByGroupObservable(groupName: String): Observable<List<CultureObject>> =
-        cultureObjectDao.getByGroupObservable(groupName)
+    override fun loadObjectsByGroupFlowable(groupName: String): Flowable<List<CultureObject>> =
+        cultureObjectDao.getByGroupFlowable(groupName)
 
 }

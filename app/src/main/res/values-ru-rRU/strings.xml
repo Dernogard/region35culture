@@ -6,4 +6,6 @@
     <string name="empty_list_label">Нет данных для показа. Пожалуйста, проверьте интернет соединение.</string>
     <string name="no_internet_connection">Нет соединения с интернетом</string>
     <string name="no_network_connection">Нет сетевого соединения</string>
+    <string name="latitude">Широта:</string>
+    <string name="longitude">Долгота:</string>
 </resources>

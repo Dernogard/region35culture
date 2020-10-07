@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit
  * for updating information about culture objects from API.
  */
 
+const val UPDATE_CULTURE_WORK_TAG = "updateCultureWorkTag"
+
 class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
     // Need for hilt's inject
@@ -23,7 +25,6 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
     interface UpdateCultureWorkEntryPoint{
         fun cultureApiService(): CultureInternetApi
     }
-
 
     companion object {
         fun installBackgroundWork(): PeriodicWorkRequest {
@@ -35,6 +36,7 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
             return PeriodicWorkRequest
                 .Builder(UpdateCultureWorker::class.java, 24, TimeUnit.HOURS)
                 .setConstraints(constraint)
+                .addTag(UPDATE_CULTURE_WORK_TAG)
                 .build()
         }
     }

@@ -5,4 +5,8 @@
     <string name="empty_list_label">No data for showing. Please check the Internet</string>
     <string name="no_internet_connection">No Internet connection =(</string>
     <string name="no_network_connection">No network connection =(</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="borderY" translatable="false">МСК-35 Y:</string>
+    <string name="borderX" translatable="false">МСК-35 X:</string>
 </resources>

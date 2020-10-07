@@ -1,4 +1,4 @@
-package ru.dernogard.region35culture
+package ru.dernogard.region35culture.utill
 
 import android.content.Context
 import android.net.ConnectivityManager

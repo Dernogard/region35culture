@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.qualifiers.ActivityContext
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.database.models.CultureGroup
 import ru.dernogard.region35culture.database.models.CultureObject
-import ru.dernogard.region35culture.database.repo.CultureObjectLocalRepo
+import ru.dernogard.region35culture.database.repo.CultureObjectRepository
+import ru.dernogard.region35culture.di.LocalCultureRepository
 import java.util.*
 
 class CultureViewModel @ViewModelInject constructor(
     @ActivityContext val context: Context,
-    private val cultureObjectRepository: CultureObjectLocalRepo
+    @LocalCultureRepository private val cultureObjectRepository: CultureObjectRepository
 ) : ViewModel() {
 
     // A default group for showing all items
@@ -21,47 +22,47 @@ class CultureViewModel @ViewModelInject constructor(
 
     var currentCultureGroup: CultureGroup? = null
 
-    val cultureGroupListObserver: Observable<List<CultureGroup>> =
+    val cultureGroupListObserver: Flowable<List<CultureGroup>> =
         cultureObjectRepository
-            .loadGroupFromLocalDatabaseObservable()
+            .loadGroupsFlowable()
             .distinctUntilChanged()
             .map {
                 convertStringToCultureGroupList(it)
             }
 
-    private var cultureObjectListResultObserver: Observable<List<CultureObject>>? = null
-    fun getCurrentListObservable(): Observable<List<CultureObject>>? =
-        cultureObjectListResultObserver
+    private var cultureObjectListResultFlowable: Flowable<List<CultureObject>>? = null
+    fun getCurrentListFlowable(): Flowable<List<CultureObject>>? =
+        cultureObjectListResultFlowable
 
-    fun searchCultureObjectsByGroup(group: CultureGroup): Observable<List<CultureObject>> {
-        val lastResult = cultureObjectListResultObserver
+    fun searchCultureObjectsByGroup(group: CultureGroup): Flowable<List<CultureObject>> {
+        val lastResult = cultureObjectListResultFlowable
         if (group == currentCultureGroup && lastResult != null) return lastResult
         currentCultureGroup = group
 
-        cultureObjectListResultObserver = getFreshListUsingDatabaseMethod(group)
-        // Or we can do filtering with RxHelp help
+        cultureObjectListResultFlowable = getFreshListUsingDatabaseMethod(group)
+        // Or we can do filtering with RxJava help
         //cultureObjectListResultObserver = getFreshListUsingRxJava(group)
 
-        return cultureObjectListResultObserver!!
+        return cultureObjectListResultFlowable!!
     }
 
     // Function for example using RxJava
-    private fun getFreshListUsingRxJava(group: CultureGroup): Observable<List<CultureObject>>? {
-        val newResultObservable = cultureObjectRepository.loadAllFromLocalDatabaseObservable()
-        return if (group == allInclusiveGroup) newResultObservable
-        else newResultObservable.flatMap {
-            Observable.fromIterable(it)
+    private fun getFreshListUsingRxJava(group: CultureGroup): Flowable<List<CultureObject>>? {
+        val newResultFlowable = cultureObjectRepository.loadAllObjectsFlowable()
+        return if (group == allInclusiveGroup) newResultFlowable
+        else newResultFlowable.flatMap {
+            Flowable.fromIterable(it)
                 .filter { building ->
                     building.type == group.title
                 }
                 .toList()
-                .toObservable()
+                .toFlowable()
         }
     }
 
-    private fun getFreshListUsingDatabaseMethod(group: CultureGroup): Observable<List<CultureObject>> {
-        return if (group == allInclusiveGroup) cultureObjectRepository.loadAllFromLocalDatabaseObservable()
-        else cultureObjectRepository.loadFromLocalDatabaseByGroupObservable(group.title).cache()
+    private fun getFreshListUsingDatabaseMethod(group: CultureGroup): Flowable<List<CultureObject>> {
+        return if (group == allInclusiveGroup) cultureObjectRepository.loadAllObjectsFlowable()
+        else cultureObjectRepository.loadObjectsByGroupFlowable(group.title).cache()
     }
 
     private fun convertStringToCultureGroupList(list: List<String>): List<CultureGroup> {

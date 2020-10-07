@@ -11,16 +11,16 @@ import java.io.Serializable
 
 @Entity(indices = [Index(value = ["title"], unique = true)])
 data class CultureObject(
-    val number: Int,
-    val title: String,
-    val addressGov: String,
-    val address: String,
-    val documentName: String,
-    val latitude: Double,
-    val longitude: Double,
-    val type: String,
-    val borderX: String,
-    val borderY: String
+    val number: Int = 0,
+    val title: String = "",
+    val addressGov: String = "",
+    val address: String = "",
+    val documentName: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val type: String = "",
+    val borderX: String = "",
+    val borderY: String = ""
 ): Serializable {
     // We can use the object's number from API but it could changed
     @PrimaryKey(autoGenerate = true)

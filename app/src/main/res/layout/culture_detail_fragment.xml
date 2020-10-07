@@ -34,62 +34,105 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.type}"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:textSize="14sp"
                 android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="@{viewModel.cultureObject.type}"
+                android:textSize="14sp"
                 tools:text="Type" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.addressGov}"
                 android:layout_margin="8dp"
+                android:text="@{viewModel.cultureObject.addressGov}"
                 tools:text="Address Gov" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.address}"
                 android:layout_margin="8dp"
+                android:text="@{viewModel.cultureObject.address}"
                 tools:text="Address" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.documentName}"
                 android:layout_margin="8dp"
+                android:text="@{viewModel.cultureObject.documentName}"
                 tools:text="Document Name" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{String.valueOf(viewModel.cultureObject.latitude)}"
-                android:layout_margin="8dp"
-                tools:text="Latitude" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/latitude" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{String.valueOf(viewModel.cultureObject.latitude)}"
+                    tools:text="53.894616" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/longitude" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{String.valueOf(viewModel.cultureObject.longitude)}"
+                    tools:text="53.894616" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{String.valueOf(viewModel.cultureObject.longitude)}"
-                android:layout_margin="8dp"
-                tools:text="Longitude" />
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/borderX" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.borderX}"
-                android:layout_margin="8dp"
-                tools:text="BorderX" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{viewModel.cultureObject.borderX}"
+                    tools:text=" " />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.cultureObject.borderY}"
-                android:layout_margin="8dp"
-                tools:text="BorderY" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/borderY" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{viewModel.cultureObject.borderY}"
+                    tools:text=" " />
+
+            </LinearLayout>
 
         </LinearLayout>
 
