@@ -26,7 +26,7 @@ interface CultureObjectDao {
     @Query("SELECT * FROM CultureObject WHERE id=:id")
     fun findByIdSingle(id: Long): Single<CultureObject>
 
-    // Some culture object don't have any group. That's why we using length filter
+    // Some culture object don't have any group but returned. That's why we using length filter
     @Query("SELECT type FROM CultureObject WHERE LENGTH(type) > 1 GROUP BY type")
     fun getAllGroupFlowable(): Flowable<List<String>>
 
