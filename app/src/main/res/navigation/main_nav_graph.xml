@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/cultureListFragment"
         android:name="ru.dernogard.region35culture.ui.main.fragments.CultureListFragment"
-        android:label="culture_groups_fragment"
+        android:label=""
         tools:layout="@layout/culture_list_fragment" >
         <action
             android:id="@+id/action_cultureListFragment_to_cultureDetailFragment"
@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/cultureDetailFragment"
         android:name="ru.dernogard.region35culture.ui.main.fragments.CultureDetailFragment"
-        android:label="CultureDetailFragment"
+        android:label=""
         tools:layout="@layout/culture_detail_fragment">
         <argument
             android:name="cultureObject"

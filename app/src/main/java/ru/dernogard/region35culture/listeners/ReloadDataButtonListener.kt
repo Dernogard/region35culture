@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.Snackbar
-import ru.dernogard.region35culture.utill.NetworkCheckHelper
+import ru.dernogard.region35culture.utils.NetworkCheckHelper
 import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.api.CultureInternetApi
 
