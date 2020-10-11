@@ -16,7 +16,7 @@ import ru.dernogard.region35culture.database.models.CultureObject
  * Show the culture object on the map
  */
 
-class CultureMapLocationFragment : Fragment(R.layout.fragment_maps) {
+internal class CultureMapLocationFragment : Fragment(R.layout.fragment_maps) {
 
     private lateinit var mapFragment: SupportMapFragment
     private val mapZoom = 13.5F

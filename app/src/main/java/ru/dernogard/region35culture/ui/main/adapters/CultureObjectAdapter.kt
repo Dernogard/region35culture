@@ -13,7 +13,7 @@ import ru.dernogard.region35culture.databinding.ItemCultureObjectBinding
 
 const val BUNDLE_CULTURE_OBJECT = "cultureObject"
 
-class CultureObjectAdapter :
+internal class CultureObjectAdapter :
     ListAdapter<CultureObject, CultureObjectAdapter.CultureObjectHolder>(CultureObjectDiffCallback()) {
 
     class CultureObjectDiffCallback : DiffUtil.ItemCallback<CultureObject>() {

@@ -13,7 +13,7 @@ import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.databinding.CultureDetailFragmentBinding
 import ru.dernogard.region35culture.ui.main.viewmodels.CultureDetailViewModel
 
-class CultureDetailFragment: Fragment() {
+internal class CultureDetailFragment: Fragment() {
 
     private val mViewModel: CultureDetailViewModel by viewModels()
     private val mapFragment: CultureMapLocationFragment = CultureMapLocationFragment()

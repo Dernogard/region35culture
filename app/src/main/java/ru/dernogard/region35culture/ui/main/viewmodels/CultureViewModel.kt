@@ -17,7 +17,7 @@ import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
 import java.util.*
 import kotlin.NullPointerException
 
-class CultureViewModel @ViewModelInject constructor(
+internal class CultureViewModel @ViewModelInject constructor(
     @ActivityContext val context: Context,
     @LocalCultureRepository private val cultureObjectRepository: CultureObjectRepository,
     private val cultureServiceApi: CultureInternetApi,

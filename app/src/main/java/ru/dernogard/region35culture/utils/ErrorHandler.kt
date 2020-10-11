@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException
  * Class getting error and returning correct message from string resources
  */
 
-class ErrorHandler {
+internal class ErrorHandler {
 
     fun getErrorStringResId(throwable: Throwable): Int {
         return when (throwable) {

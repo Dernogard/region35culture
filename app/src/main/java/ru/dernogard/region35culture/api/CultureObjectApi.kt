@@ -9,7 +9,7 @@ import ru.dernogard.region35culture.database.models.CultureObjectResponse
  * Interface for retrofit
  */
 
-interface CultureObjectApi {
+internal interface CultureObjectApi {
 
     // id_dataset is pointer to required dataset on the server
     @GET("json.php")

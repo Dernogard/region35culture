@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.dernogard.region35culture.database.AppRoomDatabase
+import ru.dernogard.region35culture.database.DatabaseDiCreator
 import ru.dernogard.region35culture.database.dao.CultureObjectDao
 import javax.inject.Singleton
 
@@ -22,9 +23,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context) =
-        Room.databaseBuilder(
-            appContext, AppRoomDatabase::class.java, "Region35Culture.db"
-        ).build()
+        DatabaseDiCreator.createAppRoomDatabase(appContext)
 
     @Provides
     @Singleton

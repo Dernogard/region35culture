@@ -18,7 +18,7 @@ import ru.dernogard.region35culture.worker.UpdateCultureWorker
 private const val WORK_UPDATE_CULTURE_INFO = "updateCultureWork"
 
 @AndroidEntryPoint
-class CultureActivity :
+internal class CultureActivity :
     AppCompatActivity(R.layout.culture_activity) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

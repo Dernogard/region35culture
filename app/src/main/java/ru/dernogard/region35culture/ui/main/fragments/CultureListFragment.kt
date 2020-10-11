@@ -32,7 +32,7 @@ import ru.dernogard.region35culture.utils.ErrorHandler
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
-class CultureListFragment : Fragment() {
+internal class CultureListFragment : Fragment() {
 
     private val mViewModel: CultureViewModel by viewModels()
 

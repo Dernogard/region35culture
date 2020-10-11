@@ -14,7 +14,7 @@ import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
  * @see CultureListFragment
  */
 
-class CultureGroupsAdapter :
+internal class CultureGroupsAdapter :
     ListAdapter<CultureGroup, CultureGroupsAdapter.CultureGroupHolder>(CultureGroupDiffCallback()) {
 
     lateinit var groupSelectedListener: GroupSelectedListener
