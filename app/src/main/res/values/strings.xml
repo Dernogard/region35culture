@@ -3,10 +3,22 @@
     <string name="show_all">All</string>
     <string name="action_search">Search</string>
     <string name="empty_list_label">No data for showing. Please check the Internet</string>
-    <string name="no_internet_connection">No Internet connection =(</string>
-    <string name="no_network_connection">No network connection =(</string>
+    <string name="error_internet_connection">No Internet connection =(</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
     <string name="borderY" translatable="false">МСК-35 Y:</string>
     <string name="borderX" translatable="false">МСК-35 X:</string>
+    <string name="error_wrong_data">Error 0: Server returned wrong data</string>
+    <string name="error_403">Error 403: Forbidden</string>
+    <string name="error_404">Error 404: Not Found</string>
+    <string name="error_500">Error 500: Internal Server Error</string>
+    <string name="error_502">Error 502: Bad Gateway</string>
+    <string name="error_timeout">Error 1: Error timeout</string>
+    <string name="error_getting_data">"Failed to get data: %1s"</string>
+    <string name="error_unknown">Error 2: Unknown error</string>
+    <string name="unknown_connection_error">Error 4: Unknown connection error</string>
+    <string name="unknown_server_error">Error 5: Unknown server error</string>
+    <string name="unknown_internet_error">Error 6: Unknown internet error</string>
+    <string name="error_400">Error 400: Bad Request</string>
+    <string name="unknown_redirect_error">Error 3: Redirect error</string>
 </resources>

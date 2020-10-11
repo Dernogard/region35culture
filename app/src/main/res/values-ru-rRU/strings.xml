@@ -4,8 +4,20 @@
     <string name="show_all">Все</string>
     <string name="action_search">Поиск</string>
     <string name="empty_list_label">Нет данных для показа. Пожалуйста, проверьте интернет соединение.</string>
-    <string name="no_internet_connection">Нет соединения с интернетом</string>
-    <string name="no_network_connection">Нет сетевого соединения</string>
+    <string name="error_internet_connection">Нет соединения с интернетом</string>
     <string name="latitude">Широта:</string>
     <string name="longitude">Долгота:</string>
+    <string name="error_getting_data">Не удалось получить данные: %1s</string>
+    <string name="error_404">Ошибка 404: Данные не найдены</string>
+    <string name="error_wrong_data">Ошибка 0: Сервер вернул неправильные данные</string>
+    <string name="error_403">Ошибка 403: Доступ запрещён</string>
+    <string name="error_500">"Ошибка 500: Внутренняя ошибка сервера "</string>
+    <string name="error_502">Ошибка 502: Ошибка сервера</string>
+    <string name="error_timeout">Ошибка 1: Время ожидания ответа истекло</string>
+    <string name="error_unknown">Ошибка 2: Неизвестная ошибка</string>
+    <string name="unknown_connection_error">Ошибка 4: Неизвестная ошибка соединения</string>
+    <string name="unknown_server_error">Ошибка 5: Неизвестная ошибка сервера</string>
+    <string name="unknown_internet_error">Ошибка 6: Неизвестная ошибка интернета</string>
+    <string name="error_400">Ошибка 400: Неверный запрос</string>
+    <string name="unknown_redirect_error">Ошибка 3: Ошибка перенаправления</string>
 </resources>

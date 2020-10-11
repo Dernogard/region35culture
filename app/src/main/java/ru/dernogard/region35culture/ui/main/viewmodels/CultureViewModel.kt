@@ -5,22 +5,31 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.qualifiers.ActivityContext
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import ru.dernogard.region35culture.R
+import ru.dernogard.region35culture.api.CultureInternetApi
 import ru.dernogard.region35culture.database.models.CultureGroup
 import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.database.repo.CultureObjectRepository
 import ru.dernogard.region35culture.di.LocalCultureRepository
+import ru.dernogard.region35culture.ui.main.fragments.CultureListFragment
 import java.util.*
+import kotlin.NullPointerException
 
 class CultureViewModel @ViewModelInject constructor(
     @ActivityContext val context: Context,
-    @LocalCultureRepository private val cultureObjectRepository: CultureObjectRepository
+    @LocalCultureRepository private val cultureObjectRepository: CultureObjectRepository,
+    private val cultureServiceApi: CultureInternetApi,
 ) : ViewModel() {
 
     // A default group for showing all items
     val allInclusiveGroup = CultureGroup(context.getString(R.string.show_all))
-
     var currentCultureGroup: CultureGroup? = null
+    private val disposablesStorage = CompositeDisposable()
+    var fragmentOwner: CultureListFragment? = null
 
     val cultureGroupListObserver: Flowable<List<CultureGroup>> =
         cultureObjectRepository
@@ -76,4 +85,35 @@ class CultureViewModel @ViewModelInject constructor(
         return newList
     }
 
+    fun reloadDataFromInternet() {
+        cultureServiceApi.getData()
+            .doOnSubscribe {
+                fragmentOwner?.changeUiLoadDataFromInternet(isStart = true)
+            }
+            .doOnTerminate {
+                fragmentOwner?.changeUiLoadDataFromInternet(isStart = false)
+            }
+            .subscribe(
+                { list ->
+                    if (!list.isNullOrEmpty()) {
+                        saveDataToDatabase(list)
+                    } else {
+                        fragmentOwner
+                            ?.handleGetDataFromInternetError(Throwable(NullPointerException()))
+                    }
+                },
+                {
+                    fragmentOwner?.handleGetDataFromInternetError(it)
+                }
+            ).addTo(disposablesStorage)
+    }
+
+    private fun saveDataToDatabase(list: List<CultureObject>) {
+        cultureObjectRepository.saveAll(list)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposablesStorage.clear()
+    }
 }

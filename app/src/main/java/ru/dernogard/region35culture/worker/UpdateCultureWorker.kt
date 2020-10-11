@@ -6,7 +6,12 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.components.ApplicationComponent
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import ru.dernogard.region35culture.api.CultureInternetApi
+import ru.dernogard.region35culture.database.models.CultureObject
+import ru.dernogard.region35culture.database.repo.CultureObjectRepository
+import ru.dernogard.region35culture.di.LocalCultureRepository
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,8 +28,14 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
     @EntryPoint
     @InstallIn(ApplicationComponent::class)
     interface UpdateCultureWorkEntryPoint{
-        fun cultureApiService(): CultureInternetApi
+        fun getCultureApiService(): CultureInternetApi
+        @LocalCultureRepository
+        fun getCultureObjectRepository(): CultureObjectRepository
     }
+
+    private val disposableStorage = CompositeDisposable()
+    private val hiltEntryPoint = EntryPointAccessors
+        .fromApplication(applicationContext, UpdateCultureWorkEntryPoint::class.java)
 
     companion object {
         fun installBackgroundWork(): PeriodicWorkRequest {
@@ -45,15 +56,27 @@ class UpdateCultureWorker(context: Context, params: WorkerParameters) : Worker(c
 
     private fun checkUpdate(): Result {
         return try {
-            val hiltEntryPoint =
-                EntryPointAccessors
-                    .fromApplication(applicationContext, UpdateCultureWorkEntryPoint::class.java)
+            hiltEntryPoint
+                .getCultureApiService()
+                .getData()
+                .onErrorReturn { emptyList() }
+                .subscribe { list ->
+                    saveDataToDatabase(list)
+                }
+                .addTo(disposableStorage)
 
-            hiltEntryPoint.cultureApiService().getDataAndSaveIt()
             Result.success()
         } catch (e: Exception) {
             Result.failure()
         }
     }
 
+    private fun saveDataToDatabase(list: List<CultureObject>) {
+        hiltEntryPoint.getCultureObjectRepository().saveAll(list)
+    }
+
+    override fun onStopped() {
+        super.onStopped()
+        disposableStorage.clear()
+    }
 }

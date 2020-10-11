@@ -2,6 +2,8 @@ package ru.dernogard.region35culture.ui.main.fragments
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,25 +18,24 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.culture_list_fragment.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import ru.dernogard.region35culture.R
-import ru.dernogard.region35culture.api.CultureInternetApi
 import ru.dernogard.region35culture.database.models.CultureGroup
 import ru.dernogard.region35culture.database.models.CultureObject
 import ru.dernogard.region35culture.databinding.CultureListFragmentBinding
-import ru.dernogard.region35culture.listeners.ReloadDataButtonListener
 import ru.dernogard.region35culture.ui.main.adapters.CultureGroupsAdapter
 import ru.dernogard.region35culture.ui.main.adapters.CultureObjectAdapter
 import ru.dernogard.region35culture.ui.main.viewmodels.CultureViewModel
+import ru.dernogard.region35culture.utils.ErrorHandler
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CultureListFragment : Fragment() {
 
     private val mViewModel: CultureViewModel by viewModels()
 
-    @Inject
-    lateinit var cultureServiceApi: CultureInternetApi
     private lateinit var groupAdapter: CultureGroupsAdapter
     private lateinit var objectAdapter: CultureObjectAdapter
 
@@ -43,9 +44,10 @@ class CultureListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         setHasOptionsMenu(true)
+        mViewModel.fragmentOwner = this
         return CultureListFragmentBinding.inflate(layoutInflater).root
     }
 
@@ -83,9 +85,9 @@ class CultureListFragment : Fragment() {
      * will do auto-reloading job after reconnect
      */
     private fun setupRetryButton() {
-        button_retry.setOnClickListener(
-            ReloadDataButtonListener(requireContext(), cultureServiceApi)
-        )
+        button_retry.setOnClickListener {
+            mViewModel.reloadDataFromInternet()
+        }
     }
 
     private fun setupCultureGroupRV() {
@@ -146,7 +148,7 @@ class CultureListFragment : Fragment() {
 
     private fun reloadDataFromInternet() {
         changeEmptyListLabelVisibility(isShow = true)
-        cultureServiceApi.getDataAndSaveIt()
+        mViewModel.reloadDataFromInternet()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -189,6 +191,26 @@ class CultureListFragment : Fragment() {
         super.onPause()
         disposableStorage.clear()
     }
+
+    fun changeUiLoadDataFromInternet(isStart: Boolean) {
+        CoroutineScope(Main).launch {
+            progress_bar.visibility = isStart.toViewVisibility()
+            button_retry.isEnabled = !isStart
+        }
+    }
+
+    fun handleGetDataFromInternetError(throwable: Throwable) {
+        val errorResId = ErrorHandler().getErrorStringResId(throwable)
+        showErrorMessage(errorResId)
+    }
+
+    private fun showErrorMessage(@StringRes messageId: Int) =
+        CoroutineScope(Main).launch {
+            val errorCause = requireContext().getString(messageId)
+            val errorMessage = requireContext().getString(R.string.error_getting_data, errorCause)
+            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        }
+
 }
 
 // show view if boolean is true
