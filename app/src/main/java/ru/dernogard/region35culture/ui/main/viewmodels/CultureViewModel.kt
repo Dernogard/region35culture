@@ -5,10 +5,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.qualifiers.ActivityContext
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import ru.dernogard.region35culture.R
 import ru.dernogard.region35culture.api.CultureInternetApi
 import ru.dernogard.region35culture.database.models.CultureGroup

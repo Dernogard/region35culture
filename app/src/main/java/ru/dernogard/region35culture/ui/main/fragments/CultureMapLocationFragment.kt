@@ -36,4 +36,5 @@ class CultureMapLocationFragment : Fragment(R.layout.fragment_maps) {
         }
         mapFragment.getMapAsync(callback)
     }
+
 }
